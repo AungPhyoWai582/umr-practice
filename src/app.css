@@ -1,0 +1,6 @@
+.active {
+    border-left-width: 4px;
+    border-color: #48bb78;
+    display: flex;
+    background-color: #c6f6d5;
+}
