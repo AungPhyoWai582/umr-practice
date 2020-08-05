@@ -4,7 +4,7 @@ const TableHeader = ({ tableHeader, tableAction,headerCheck,setHeaderCheck}) => 
   return (
     <div className="hidden md:table-row text-green-100 bg-green-500 font-bold">
       <div className="hidden lg:table-cell md:px-2 md:py-3 lg:p-3">
-        <input type="checkbox" checked={headerCheck} onClick={()=>setHeaderCheck(!headerCheck)}/>
+        <input type="checkbox" defaultChecked={headerCheck} onClick={()=>setHeaderCheck(!headerCheck)}/>
       </div>
       <div className="hidden lg:table-cell md:px-2 md:py-3 lg:p-3">#</div>
       {tableHeader.map((th, index) => (

@@ -1,62 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import FormFooter from "../components/Form/FormFooter/FormFooter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FormControl from "../components/Form/FormControl/FormControl";
-import Select from "../components/Form/Input/Select";
 import Input from "../components/Form/Input/Input";
 import Button from "../components/Form/Button/Button";
-import { axiosConfig } from "../Axios/Axios";
-const RoleSetupModal = ({
-  setRefresh,
+
+const DesignationSetupModal = ({
   setOpenModal,
-  typeSelect,
-  setTypeSelect,
-  roleInput,
-  setRoleInput,
+  designInput,
+  setDesignInput,
+  Create,
+  Update,
   edit,
   setEdit,
-  Update,
+  setTemIsActive,
   setShow,
   errorMessage,
   setErrorMessage,
 }) => {
-  const [types, setTypes] = useState([]);
-
-  useEffect(() => {
-    axiosConfig
-      .get("/types")
-      .then((response) => {
-        setTypes(response.data.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
-  const Create = (e) => {
-    e.preventDefault();
-    let obj = {
-      name: roleInput,
-      is_active: "true",
-      type_id: typeSelect,
-    };
-    axiosConfig
-      .post("/roles", obj)
-      .then((response) => {
-        if (response.data.data) {
-          setOpenModal(false);
-          setRefresh(true);
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      })
-      .catch((error) => console.log(error));
-  };
-
   const cancel = (e) => {
     e.preventDefault();
     setEdit(false);
     setOpenModal(false);
     setShow(false);
-    setRoleInput(null);
-    setTypeSelect(null);
+    setDesignInput(null);
+    setTemIsActive(null);
     setErrorMessage(null);
   };
   return (
@@ -73,8 +41,9 @@ const RoleSetupModal = ({
               {edit ? (
                 <h1 className="text-lg">Update Role</h1>
               ) : (
-                <h1 className="text-lg">Create New Role</h1>
+                <h1 className="text-lg">Create New Type</h1>
               )}
+
               <div
                 className="text-center px-2 inline-block cursor-pointer text-red-600 hover:text-red-900"
                 onClick={(e) => cancel(e)}
@@ -89,23 +58,12 @@ const RoleSetupModal = ({
             )}
             <form action="" className="px-4">
               <FormControl>
-                <Select
-                  className="w-full"
-                  labelText="Role Type"
-                  name="checkType"
-                  preViewData="-- Choose One --"
-                  value={typeSelect}
-                  optionData={types}
-                  onChange={(e) => setTypeSelect(e.target.value)}
-                />
-              </FormControl>
-              <FormControl>
                 <Input
                   className="w-full"
                   type="text"
-                  labelText="Role"
-                  value={roleInput}
-                  onChange={(e) => setRoleInput(e.target.value)}
+                  labelText="Type Name"
+                  value={designInput}
+                  onChange={(e) => setDesignInput(e.target.value)}
                 />
               </FormControl>
               <FormFooter className="pb-4">
@@ -118,16 +76,16 @@ const RoleSetupModal = ({
                 </button>
                 {edit ? (
                   <Button
-                    className={!roleInput && "cursor-not-allowed"}
-                    nodata={!roleInput? true : false}
+                    className={!designInput && "cursor-not-allowed"}
+                    nodata={!designInput ? true : false}
                     onClick={(e) => Update(e)}
                   >
                     Update
                   </Button>
                 ) : (
                   <Button
-                    className={(!roleInput || !typeSelect) && "cursor-not-allowed"}
-                    nodata={(!roleInput || !typeSelect) ? true : false}
+                    className={!designInput && "cursor-not-allowed"}
+                    nodata={!designInput ? true : false}
                     onClick={(e) => Create(e)}
                   >
                     Create
@@ -142,4 +100,4 @@ const RoleSetupModal = ({
   );
 };
 
-export default RoleSetupModal;
+export default DesignationSetupModal;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TableFilter from "./TableFilter";
 import TableHeader from "./TableHeader";
 import TableDataRow from "./TableDataRow";
@@ -138,6 +138,7 @@ const Table = ({
   };
 
   return (
+    <>
     <div className="overflow-auto pb-10 text-sm md:border md:bg-white md:rounded-lg md:shadow-md md:overflow-visible md:pb-0">
       <div
         style={style.backdropBlur}
@@ -202,7 +203,6 @@ const Table = ({
                   currentPage={currentPage}
                   filteredData={filteredData}
                   headerCheck={headerCheck}
-                  setHeaderCheck={setHeaderCheck}
                 />
               </TableAuthApi.Provider>
             </React.Fragment>
@@ -210,6 +210,7 @@ const Table = ({
         })}
       </div>
     </div>
+    </>
   );
 };
 export default Table;

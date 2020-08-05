@@ -5,6 +5,11 @@ import UserSetup from "../pages/user/UserSetup";
 import Sidebar from "../components/Sidebar/Sidebar";
 import RoleList from '../pages/role/RoleList';
 import PermissionSetup from '../pages/role/PermissionSetup';
+import TypeList from '../pages/type/TypeList';
+import DepartmentList from '../pages/department/DepartmentList';
+import EducationList from '../pages/education/EducationList';
+import DesignationList from '../pages/desigination/DesignationList';
+import SpecialitiesList from '../pages/specialities/SpecialitiesList';
 
 function createMenuItem(itemName, menuIcon, routeTo, subItems) {
   return { itemName, menuIcon, routeTo, subItems };
@@ -19,13 +24,13 @@ const menuItems = [
   ]),
   createMenuItem("Role", "id-card", null, [
     createSubMenuItem("Role List", "list", "/role-list"),
-    createSubMenuItem("Role Setup", "plus", "/permission-setup"),
+    createSubMenuItem("Role Setup", "plus", "/role-setup"),
   ]),
-  createMenuItem("Types", "tag", "/sampleLink"),
-  createMenuItem("Department", "clinic-medical", "/sampleLink"),
-  createMenuItem("Education", "book-open", "/sampleLink"),
-  createMenuItem("Designation", "users-cog", "/sampleLink"),
-  createMenuItem("Specialities", "stethoscope", "/sampleLink"),
+  createMenuItem("Types", "tag", "/type-list"),
+  createMenuItem("Department", "clinic-medical", "/department-list"),
+  createMenuItem("Education", "book-open", "/education-list"),
+  createMenuItem("Designation", "users-cog", "/desigination-list"),
+  createMenuItem("Specialities", "stethoscope", "/specialities-list"),
 ];
 
 const DashboardLayout = () => {
@@ -51,13 +56,27 @@ const DashboardLayout = () => {
           <Route exact path="/role-list">
             <RoleList toggleSidebar={toggleSidebar} />
           </Route>
-          <Route exact path="/permission-setup">
+          <Route exact path="/role-setup">
             <PermissionSetup toggleSidebar={toggleSidebar} />
+          </Route>
+          <Route exact path="/type-list">
+            <TypeList toggleSidebar={toggleSidebar} />
+          </Route>
+          <Route exact path="/department-list">
+            <DepartmentList toggleSidebar={toggleSidebar} />
+          </Route>
+          <Route exact path="/education-list">
+            <EducationList toggleSidebar={toggleSidebar} />
+          </Route>
+          <Route exact path="/desigination-list">
+            <DesignationList toggleSidebar={toggleSidebar} />
+          </Route>
+          <Route exact path="/specialities-list">
+            <SpecialitiesList toggleSidebar={toggleSidebar} />
           </Route>
         </Switch>
       </div>
     </div>
   );
 };
-
 export default DashboardLayout;

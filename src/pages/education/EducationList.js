@@ -3,28 +3,27 @@ import Topbar from "../../components/Topbar/Topbar";
 import Input from "../../components/Form/Input/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { axiosConfig } from "../../Axios/Axios";
-import RoleSetupModal from "../../modals/RoleSetupModal";
+import EducationSetupModal from "../../modals/EducationSetupModal";
 
-const RoleList = ({ toggleSidebar }) => {
-  const [roleData, setRoleData] = useState([]);
+const EducationList = ({ toggleSidebar }) => {
+  const [educationData, setEducationData] = useState([]);
   const [toggleIndex, setToggleIndex] = useState();
   const [show, setShow] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [typeSelect, setTypeSelect] = useState();
-  const [roleInput, setRoleInput] = useState();
-  const [refresh, setRefresh] = useState(false);
-  const [search, setSearch] = useState();
-  const [edit, setEdit] = useState(false);
+  const [eduInput, setEduInput] = useState();
   const [temIsActive, setTemIsActive] = useState();
-  const [temId, setTemId] = useState();
+  const [openModal, setOpenModal] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [tempId, setTempId] = useState();
+  const [search, setSearch] = useState();
   const [errorMessage, setErrorMessage] = useState();
 
   useEffect(() => {
     axiosConfig
-      .get("/roles")
+      .get("/educations")
       .then((response) => {
         if (response.data.data) {
-          setRoleData(response.data.data);
+          setEducationData(response.data.data);
           setRefresh(false);
           setShow(false);
         }
@@ -46,14 +45,12 @@ const RoleList = ({ toggleSidebar }) => {
     e.preventDefault();
     let index = id - 1;
     let obj = {
-      name: roleData[index].name,
-      is_active: roleData[index].is_active === "true" ? "false" : "true",
-      type_id: roleData[index].type_id,
+      id: educationData[index].id,
+      name: educationData[index].name,
+      is_active: educationData[index].is_active === "true" ? "false" : "true",
     };
-    setShow(false);
-    console.log(obj);
     axiosConfig
-      .put(`roles/${id}`, obj)
+      .put(`educations/${id}`, obj)
       .then((response) => {
         if (response.data.data) {
           setRefresh(true);
@@ -63,12 +60,30 @@ const RoleList = ({ toggleSidebar }) => {
       .catch((error) => console.log(error));
   };
 
+  const Create = (e) => {
+    e.preventDefault();
+    let obj = {
+      name: eduInput,
+      is_active: "true",
+    };
+    axiosConfig
+      .post("/educations", obj)
+      .then((response) => {
+        if (response.data.data) {
+          setRefresh(true);
+          setOpenModal(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
   const Edit = (e, id) => {
     e.preventDefault();
-    setTemId(id);
-    setTemIsActive(roleData[id - 1].is_active);
-    setTypeSelect(roleData[id - 1].type_id);
-    setRoleInput(roleData[id - 1].name);
+
+    setTempId(id);
+    setEduInput(educationData[id - 1].name);
+    setTemIsActive(educationData[id - 1].is_active);
     setOpenModal(true);
     setEdit(true);
   };
@@ -76,20 +91,19 @@ const RoleList = ({ toggleSidebar }) => {
   const Update = (e) => {
     e.preventDefault();
     let obj = {
-      name: roleInput,
+      name: eduInput,
       is_active: temIsActive,
-      type_id: typeSelect,
     };
     axiosConfig
-      .put(`roles/${temId}`, obj)
+      .put(`educations/${tempId}`, obj)
       .then((response) => {
         if (response.data.data) {
           setRefresh(true);
-          setShow(false);
-          setEdit(false);
           setOpenModal(false);
-          setTypeSelect(null);
-          setRoleInput(null);
+          setEduInput(null);
+          setTemIsActive(null);
+          setEdit(false);
+          setShow(false);
           setErrorMessage(null);
         }
       })
@@ -99,14 +113,13 @@ const RoleList = ({ toggleSidebar }) => {
     setSearch(e.target.value.toLowerCase());
     setShow(false);
   };
-
   let showOutput = search
-    ? roleData.filter((rd) => rd.name.toLowerCase().includes(search))
-    : roleData;
+    ? educationData.filter((td) => td.name.toLowerCase().includes(search))
+    : educationData;
 
   return (
     <React.Fragment>
-      <Topbar toggleSidebar={toggleSidebar} pageTitle="Role List" />
+      <Topbar toggleSidebar={toggleSidebar} pageTitle="Education List" />
       <div className="my-1 px-6 sm:px-8 py-4">
         <div className="bg-white rounded-lg shadow-lg text-sm mb-4 p-2">
           <form action="" className="flex flex-wrap items-center">
@@ -114,7 +127,7 @@ const RoleList = ({ toggleSidebar }) => {
               <Input
                 className="w-full"
                 type="text"
-                placeholder="Search Role"
+                placeholder="Search Type"
                 onChange={(e) => Search(e)}
               />
             </div>
@@ -142,6 +155,7 @@ const RoleList = ({ toggleSidebar }) => {
                       className="text-gray-600 cursor-pointer hover:text-gray-900"
                     />
                   </div>
+                  {/************************************** */}
                   <div
                     className={`bg-white shadow-lg rounded-lg absolute mt-4 top-0 right-0 py-4 text-sm font-bold text-gray-600 z-10 table-action ${
                       !(show && toggleIndex === index) && "hidden"
@@ -186,6 +200,7 @@ const RoleList = ({ toggleSidebar }) => {
                       )}
                     </div>
                   </div>
+                  {/************************************** */}
                 </div>
               </div>
             </div>
@@ -199,16 +214,15 @@ const RoleList = ({ toggleSidebar }) => {
         <FontAwesomeIcon className="text-sm" icon="plus" />
       </div>
       {openModal && (
-        <RoleSetupModal
-          setRefresh={setRefresh}
+        <EducationSetupModal
           setOpenModal={setOpenModal}
-          typeSelect={typeSelect}
-          setTypeSelect={setTypeSelect}
-          roleInput={roleInput}
-          setRoleInput={setRoleInput}
+          eduInput={eduInput}
+          setEduInput={setEduInput}
+          Create={Create}
+          Update={Update}
           edit={edit}
           setEdit={setEdit}
-          Update={Update}
+          setTemIsActive={setTemIsActive}
           setShow={setShow}
           errorMessage={errorMessage}
           setErrorMessage={setErrorMessage}
@@ -218,4 +232,4 @@ const RoleList = ({ toggleSidebar }) => {
   );
 };
 
-export default RoleList;
+export default EducationList;

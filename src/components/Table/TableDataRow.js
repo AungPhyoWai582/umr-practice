@@ -13,7 +13,6 @@ const TableDataRow = ({
   setTableDataRow,
   currentPage,
   headerCheck,
-  setHeaderCheck,
 }) => {
   const [check, setCheck] = useState(false);
   
@@ -32,7 +31,7 @@ const TableDataRow = ({
       }`}
     >
       <div className="hidden lg:table-cell md:px-2 md:py-3 lg:p-3 md:border-t">
-        <input type="checkbox" checked={check} onClick={handleCheck} />
+        <input type="checkbox" defaultChecked={check} onClick={handleCheck} />
       </div>
       <div className="hidden lg:table-cell md:px-2 md:py-3 lg:p-3 md:border-t">
         {rowCount}
@@ -59,11 +58,11 @@ const TableDataRow = ({
               {i === 4 ? (
                 td
               ) : td === "true" ? (
-                <span class=" text-green-600 bg-green-200   py-1 px-2 rounded-full text-xs font-bold">
+                <span className=" text-green-600 bg-green-200   py-1 px-2 rounded-full text-xs font-bold">
                   Active
                 </span>
               ) : (
-                <span class=" text-orange-600 bg-orange-200   py-1 px-2 rounded-full text-xs font-bold">
+                <span className=" text-orange-600 bg-orange-200   py-1 px-2 rounded-full text-xs font-bold">
                   Deactive
                 </span>
               )}

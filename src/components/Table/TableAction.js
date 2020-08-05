@@ -3,21 +3,37 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { axiosConfig } from "../../Axios/Axios";
 import TableAuthApi from "./TableAuthApi";
 
-function convertObj(name,email,password,phone,gender,is_active,role_id,department_id,township_id) {
-  return {name,email,password,phone,gender,is_active,role_id,department_id,township_id}
+function convertObj(
+  name,
+  email,
+  password,
+  phone,
+  gender,
+  is_active,
+  role_id,
+  department_id,
+  township_id
+) {
+  return {
+    name,
+    email,
+    password,
+    phone,
+    gender,
+    is_active,
+    role_id,
+    department_id,
+    township_id,
+  };
 }
 
-const TableAction = ({
-  tableDataRow,
-  setTableDataRow,
-  currentPage,
-}) => {
+const TableAction = ({ tableDataRow, setTableDataRow, currentPage }) => {
   const auth = useContext(TableAuthApi);
   const [updateData, setUpdateData] = useState();
   const [id, setId] = useState();
   const [change, setChange] = useState(false);
   useEffect(() => {
-    if(change===true){
+    if (change === true) {
       if (currentPage) {
         axiosConfig
           .get(`/users?page=${currentPage}`)
@@ -31,7 +47,7 @@ const TableAction = ({
             console.log(error);
           });
       }
-      if(!currentPage) {
+      if (!currentPage) {
         axiosConfig
           .get(`/users-search/${auth.select}/${auth.inputSearch}`)
           .then((response) => {
@@ -41,7 +57,7 @@ const TableAction = ({
           .catch((error) => console.log(error));
       }
     }
-  }, [change===true]);
+  }, [change === true]);
 
   const ActiveControl = (e) => {
     e.preventDefault();
@@ -57,7 +73,6 @@ const TableAction = ({
   };
 
   const toggleClick = (e, index, toggleIndex, setToggleIndex) => {
-    
     e.preventDefault();
     if (toggleIndex === index) {
       auth.setTableToggle(!auth.tableToggle);
@@ -119,14 +134,21 @@ const TableAction = ({
               className="py-2 pl-4 pr-6 flex items-center cursor-pointer text-sm font-bold hover:bg-green-100 hover:text-green-600"
               onClick={(e) => ActiveControl(e)}
             >
-              <div className="text-center flex-none mr-4 w-6">
-                <FontAwesomeIcon className="text-md" icon="trash" />
-              </div>
-              <span className="flex-none">
-                {tableDataRow[auth.index].is_active === "true"
-                  ? "Deactive"
-                  : "Active"}
-              </span>
+              {tableDataRow[auth.index].is_active === "true" ? (
+                <>
+                  <div className="text-center flex-none mr-4 w-6">
+                    <FontAwesomeIcon className="text-md" icon="trash-alt" />
+                  </div>
+                  <span className="flex-none">Deactive</span>
+                </>
+              ) : (
+                <>
+                  <div className="text-center flex-none mr-4 w-6">
+                    <FontAwesomeIcon className="text-md" icon="recycle" />
+                  </div>
+                  <span className="flex-none">Active</span>
+                </>
+              )}
             </div>
             <div className="py-2 pl-4 pr-6 flex items-center cursor-pointer text-sm font-bold hover:bg-green-100 hover:text-green-600">
               <div className="text-center flex-none mr-4 w-6">

@@ -1,20 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const CheckBox = ({ name, value, id, labelText, required,onClick,checked }) => {
+const PermissionCheckBox = ({
+  name,
+  value,
+  id,
+  labelText,
+  required,
+  check,
+  checkId,
+  setCheckId,
+  key,
+}) => {
+  const [checked, setChecked] = useState();
+
+  useEffect(() => {
+    setChecked(check);
+    console.clear();
+  }, [check]);
+
+  const handleClick = (id) => {
+    setChecked(!checked);
+    if (!checked) {
+      if (checkId) {
+        setCheckId([...checkId, id]);
+      } else {
+        setCheckId(id);
+      }
+    } else {
+      let copyCheckId = [...checkId];
+      let index = copyCheckId.indexOf(id);
+      copyCheckId.splice(index, 1);
+      setCheckId(copyCheckId);
+    }
+    if (checkId.includes(id)) {
+      let copyCheckId = [...checkId];
+      let index = copyCheckId.indexOf(id);
+      copyCheckId.splice(index, 1);
+      setCheckId(copyCheckId);
+    }
+  };
 
   return (
     <React.Fragment>
       <div className="flex flex-nowrap items-center mx-2">
         <div className="w-5 h-5 relative overflow-hidden cursor-pointer">
           <input
+            key={key}
             type="checkbox"
             className="w-full h-full appearance-none focus:outline-none"
             defaultChecked={checked}
-            onClick={onClick}
+            onClick={() => handleClick(id)}
             name={name}
             value={value}
-            id={id}
           />
           <div
             className={`pointer-events-none w-full h-full border absolute top-0 left-0 flex items-center justify-center text-xs text-white rounded shadow-inner 
@@ -39,4 +77,4 @@ const CheckBox = ({ name, value, id, labelText, required,onClick,checked }) => {
     </React.Fragment>
   );
 };
-export default CheckBox;
+export default PermissionCheckBox;

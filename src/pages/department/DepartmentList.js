@@ -3,28 +3,28 @@ import Topbar from "../../components/Topbar/Topbar";
 import Input from "../../components/Form/Input/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { axiosConfig } from "../../Axios/Axios";
-import RoleSetupModal from "../../modals/RoleSetupModal";
+import DepartmentSetupModal from "../../modals/DepartmentSetupModal";
 
-const RoleList = ({ toggleSidebar }) => {
-  const [roleData, setRoleData] = useState([]);
+const DepartmentList = ({ toggleSidebar }) => {
+  const [depData, setDepData] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const [toggleIndex, setToggleIndex] = useState();
   const [show, setShow] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [typeSelect, setTypeSelect] = useState();
-  const [roleInput, setRoleInput] = useState();
-  const [refresh, setRefresh] = useState(false);
-  const [search, setSearch] = useState();
-  const [edit, setEdit] = useState(false);
+  const [depInput, setDepInput] = useState();
+  const [depTextArea, setDepTextArea] = useState();
   const [temIsActive, setTemIsActive] = useState();
-  const [temId, setTemId] = useState();
+  const [openModal, setOpenModal] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [tempId, setTempId] = useState();
+  const [search, setSearch] = useState();
   const [errorMessage, setErrorMessage] = useState();
 
   useEffect(() => {
     axiosConfig
-      .get("/roles")
+      .get("/departments")
       .then((response) => {
         if (response.data.data) {
-          setRoleData(response.data.data);
+          setDepData(response.data.data);
           setRefresh(false);
           setShow(false);
         }
@@ -46,14 +46,13 @@ const RoleList = ({ toggleSidebar }) => {
     e.preventDefault();
     let index = id - 1;
     let obj = {
-      name: roleData[index].name,
-      is_active: roleData[index].is_active === "true" ? "false" : "true",
-      type_id: roleData[index].type_id,
+      id: depData[index].id,
+      name: depData[index].name,
+      description: depData[index].description,
+      is_active: depData[index].is_active === "true" ? "false" : "true",
     };
-    setShow(false);
-    console.log(obj);
     axiosConfig
-      .put(`roles/${id}`, obj)
+      .put(`departments/${id}`, obj)
       .then((response) => {
         if (response.data.data) {
           setRefresh(true);
@@ -63,12 +62,32 @@ const RoleList = ({ toggleSidebar }) => {
       .catch((error) => console.log(error));
   };
 
+  const Create = (e) => {
+    e.preventDefault();
+    console.log(depInput, depTextArea);
+    let obj = {
+      name: depInput,
+      description: depTextArea,
+      is_active: "true",
+    };
+    axiosConfig
+      .post("/departments", obj)
+      .then((response) => {
+        if (response.data.data) {
+          setRefresh(true);
+          setOpenModal(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
   const Edit = (e, id) => {
     e.preventDefault();
-    setTemId(id);
-    setTemIsActive(roleData[id - 1].is_active);
-    setTypeSelect(roleData[id - 1].type_id);
-    setRoleInput(roleData[id - 1].name);
+    setTempId(id);
+    setDepInput(depData[id - 1].name);
+    setDepTextArea(depData[id - 1].description);
+    setTemIsActive(depData[id - 1].is_active);
     setOpenModal(true);
     setEdit(true);
   };
@@ -76,20 +95,22 @@ const RoleList = ({ toggleSidebar }) => {
   const Update = (e) => {
     e.preventDefault();
     let obj = {
-      name: roleInput,
+      id: tempId,
+      name: depInput,
+      description: depTextArea,
       is_active: temIsActive,
-      type_id: typeSelect,
     };
     axiosConfig
-      .put(`roles/${temId}`, obj)
+      .put(`departments/${tempId}`, obj)
       .then((response) => {
         if (response.data.data) {
           setRefresh(true);
-          setShow(false);
-          setEdit(false);
           setOpenModal(false);
-          setTypeSelect(null);
-          setRoleInput(null);
+          setDepInput(null);
+          setDepTextArea(null);
+          setTemIsActive(null);
+          setEdit(false);
+          setShow(false);
           setErrorMessage(null);
         }
       })
@@ -99,10 +120,9 @@ const RoleList = ({ toggleSidebar }) => {
     setSearch(e.target.value.toLowerCase());
     setShow(false);
   };
-
   let showOutput = search
-    ? roleData.filter((rd) => rd.name.toLowerCase().includes(search))
-    : roleData;
+    ? depData.filter((d) => d.name.toLowerCase().includes(search))
+    : depData;
 
   return (
     <React.Fragment>
@@ -199,17 +219,18 @@ const RoleList = ({ toggleSidebar }) => {
         <FontAwesomeIcon className="text-sm" icon="plus" />
       </div>
       {openModal && (
-        <RoleSetupModal
-          setRefresh={setRefresh}
+        <DepartmentSetupModal
           setOpenModal={setOpenModal}
-          typeSelect={typeSelect}
-          setTypeSelect={setTypeSelect}
-          roleInput={roleInput}
-          setRoleInput={setRoleInput}
+          depInput={depInput}
+          setDepInput={setDepInput}
+          depTextArea={depTextArea}
+          setDepTextArea={setDepTextArea}
           edit={edit}
           setEdit={setEdit}
           Update={Update}
           setShow={setShow}
+          setTemIsActive={setTemIsActive}
+          Create={Create}
           errorMessage={errorMessage}
           setErrorMessage={setErrorMessage}
         />
@@ -218,4 +239,4 @@ const RoleList = ({ toggleSidebar }) => {
   );
 };
 
-export default RoleList;
+export default DepartmentList;
